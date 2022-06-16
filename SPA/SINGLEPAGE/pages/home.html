@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap"
+      rel="stylesheet"
+    />
+    
+    <title>Todo List App</title>
+  </head>
+  <style>
+:root {
+    --color-bg: #f9f9f9;
+    --color-btn: #1890ff;
+    --color-white: #ffffff;
+    --color-border-input: #eaeaea;
+    --color-black: #222222;
+    --color-btn-update: #3da545;
+  }
+  
+  * {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+  }
+  
+  html {
+    font-family: "Open Sans", sans-serif;
+  }
+  
+  body {
+    background: var(--color-bg);
+  }
+  
+  ul {
+    padding: 0;
+    list-style: none;
+  }
+  
+  .wrapper {
+    max-width: 1240px;
+    margin: 3rem auto 0 auto;
+    padding: 0 6%;
+  }
+  /*Form input of tasks*/
+  .form {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 45px;
+    margin: 0 0 2.5rem 0;
+  }
+  .form div {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+  }
+  .form div:first-child {
+    padding: 0 1rem 0 0;
+  }
+  .form .input-task {
+    width: 100%;
+    height: 80%;
+    border: 1px solid var(--color-border-input);
+    padding: 10px;
+    outline: none;
+  }
+  .form .input-task::placeholder {
+    color: #cccccc;
+  }
+  .form div:last-child {
+    width: 40%;
+    justify-content: center;
+  }
+  .btn-send,
+  .btn-update {
+    width: 100%;
+    height: 80%;
+    background: var(--color-btn);
+    border: 1px solid var(--color-btn);
+    color: var(--color-white);
+    cursor: pointer;
+    outline: none;
+    transition: 0.3s ease all;
+  }
+  .btn-update {
+    background: var(--color-btn-update);
+    border-color: var(--color-btn-update);
+  }
+  .btn-send:active,
+  .btn-update:active {
+    transform: scale(0.9);
+  }
+  .btn-send:hover,
+  .btn-update:hover {
+    background: var(--color-white);
+    color: var(--color-black);
+  }
+  /*Wrapper Task*/
+  .wrapper-task {
+    border: 1px solid var(--color-border-input);
+    height: auto;
+  }
+  .wrapper-task > h3 {
+    font-size: 1.5rem;
+    padding: 1rem 2rem;
+    margin: 0;
+    border-bottom: 1px solid var(--color-border-input);
+  }
+  .print-task {
+    padding: 2rem 1rem;
+  }
+  .print-task-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0.8rem;
+    border-bottom: 1px solid var(--color-border-input);
+    transition: 0.4s ease box-shadow;
+  }
+  .print-task-item span {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    max-width: 300px;
+    width: 100%;
+  }
+  .print-task-item .hidden {
+    display: none !important;
+  }
+  .print-task-item .task.ended,
+  .print-task-item input[checked="true"] {
+    text-decoration: line-through;
+  }
+  .print-task-item span input[type="checkbox"] {
+    margin-right: 6px;
+  }
+  .buttons-actions div {
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    background: var(--color-white);
+    color: red;
+    transition: 0.3s ease all;
+  }
+  .buttons-actions div:hover {
+    box-shadow: 0 0 6px rgba(53, 53, 53, 0.2);
+  }
+  .buttons-actions {
+    width: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  /*Message task empty*/
+  .message-task {
+    text-align: center;
+    padding: 10px;
+    background: #f9f9f9;
+    display: none;
+  }
+  .message-task-icon {
+    color: #cccccc;
+    font-size: 55px;
+    margin-bottom: 6px;
+  }
+  .message-task-text {
+    font-weight: bold;
+    font-size: 16px;
+  }
+  .message-task.active {
+    display: block;
+  }
+  .js_delete::before,
+  .js_edit::before {
+    font-family: FontAwesome;
+  }
+  .js_delete::before {
+    content: "\f2ed";
+  }
+  .js_edit::before {
+    content: "\f044";
+    color: #008000;
+  }
+  .js_edit.update::before {
+    content: "\f2f1";
+  }
+  /*Edit mode*/
+  .print-task-item.active-edit__mode {
+    box-shadow: 0 0 6px rgba(53, 53, 53, 0.5);
+  }
+  .input-edit {
+    display: none;
+  }
+  .print-task-item.active-edit__mode > span > span {
+    display: none;
+  }
+  .print-task-item.active-edit__mode .input-edit {
+    display: block;
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #cccccc;
+    outline: none;
+    transition: 0.4s ease box-shadow;
+    width: 90%;
+  }
+  .print-task-item.active-edit__mode .input-edit:focus {
+    box-shadow: 0 0 5px rgba(79, 120, 255, 0.8);
+  }
+  .buttons-actions .js_update.active {
+    cursor: pointer;
+    opacity: 1;
+  }
+  .buttons-actions .js_update::before {
+    content: "\f2f1";
+    font-family: FontAwesome;
+    color: #008000;
+  }
+  /*Responsive desing Desktop first*/
+  @media screen and (max-width: 768px) {
+    .message-task-text {
+      font-size: 14px;
+    }
+    .message-task-icon {
+      font-size: 40px;
+    }
+  }
+  
+  @media screen and (max-width: 420px) {
+    .form {
+      flex-direction: column;
+      height: auto;
+    }
+    .form div:first-child {
+      padding: 0;
+    }
+    .form div:last-child {
+      height: 45px;
+      margin: 1rem 0 0 0;
+      width: 100%;
+    }
+  }
+
+  </style>
+  <body>
+    <section class="wrapper">
+      <form class="form" id="js_form-task">
+        <div>
+          <input
+            type="text"
+            class="input-task"
+            id="input-task"
+            required
+            name="text_Task"
+            placeholder="Title..."
+          />
+        </div>
+        <div>
+          <button type="submit" id="js_btn-send" class="btn-send">
+            <i class="fas fa-plus"></i> Add
+          </button>
+        </div>
+      </form>
+      <section class="wrapper-task">
+        <h3>Todo List</h3>
+        <div class="print-task">
+          <ul class="print-task-list" id="js_container-task">
+            <!-- <li class="print-task-item">
+              <span>
+                <input type="checkbox" />
+                <span class="task">Test task of this application</span>
+                <input type="text" class="input-edit" />
+              </span>
+              <section class="buttons-actions">
+                <div class="js_delete"></div>
+                <div class="js_edit_update"></div>
+              </section>
+            </li> -->
+            <div class="message-task active" id="js_message-empty-task">
+              <div class="message-task-icon">
+                <i class="fas fa-broom"></i>
+              </div>
+              <p class="message-task-text">
+               
+              </p>
+            </div>
+          </ul>
+        </div>
+      </section>
+    </section>
+    <script
+      src="https://kit.fontawesome.com/b7301c403c.js"
+      crossorigin="anonymous"
+    ></script>
+    <script src="../js/home.js"></script>
+  </body>
+</html>
